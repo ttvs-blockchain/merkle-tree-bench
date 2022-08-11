@@ -5,6 +5,7 @@ import (
 	"fmt"
 	mt "github.com/tommytim0515/go-merkletree"
 	"math"
+	"runtime"
 	"time"
 )
 
@@ -41,6 +42,8 @@ func genTestBindings(size int) []mt.DataBlock {
 func main() {
 	config := &mt.Config{
 		AllowDuplicates: true,
+		RunInParallel:   true,
+		NumRoutines:     runtime.NumCPU(),
 	}
 	tree := mt.NewMerkleTree(config)
 	bindings := genTestBindings(testSize)
