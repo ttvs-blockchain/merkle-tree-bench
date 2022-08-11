@@ -3,15 +3,16 @@ package main
 import (
 	"crypto/rand"
 	"fmt"
-	mt "github.com/tommytim0515/go-merkletree"
 	"math"
 	"runtime"
 	"time"
+
+	mt "github.com/tommytim0515/go-merkletree"
 )
 
 const (
-	testSize = 1024
-	trial    = 8096
+	testSize = 8
+	trial    = 1000
 )
 
 // Binding is the binding of personal information hash and certificate information hash
@@ -47,11 +48,13 @@ func main() {
 	}
 	tree := mt.NewMerkleTree(config)
 	bindings := genTestBindings(testSize)
+	err := tree.Build(bindings)
+	handleError(err)
 	var totalTime float64
 	times := make([]float64, trial)
 	for i := 0; i < trial; i++ {
 		startTime := time.Now()
-		err := tree.Build(bindings)
+		_, err := tree.Verify(bindings[i%testSize], tree.Proofs[i%testSize])
 		handleError(err)
 		timeInterval := time.Since(startTime).Seconds()
 		totalTime += timeInterval
